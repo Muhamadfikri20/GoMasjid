@@ -8,8 +8,6 @@ class PlacesService {
   final key = 'AIzaSyBXfI1VzlRNZ-lzoIa0iCl1x8T3g1qMrGU';
   static String place = 'mosque';
   double distance;
-
-  /*
   var locationNearby = {
     "html_attributions": [],
     "next_page_token":
@@ -176,31 +174,16 @@ class PlacesService {
     ],
     "status": "OK"
   };
-  */
 
   Future<List<Place>> getPlaces(double lat, double lng) async {
-    var response = await http.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&type=$place&radius=5000&key=$key');
-    // await http.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&type=$place&rankby=distance&key=$key');
-//online
-    var json = convert.jsonDecode(response.body);
-    var jsonResults = json['results'] as List;
+    var jsonResults = locationNearby['results'] as List;
+
     for (int i = 0; i < jsonResults.length; i++) {
       await getDistanceHa(lat, lng, jsonResults[i]['geometry']['location']['lat'], jsonResults[i]['geometry']['location']['lng'], 6371000, i);
       jsonResults[i].addAll({"distance": distance});
     }
 
     return jsonResults.map((place) => Place.fromJson(place)).toList();
-
-/*Offline
-    // var jsonResults = locationNearby['results'] as List;
-
-    // for (int i = 0; i < jsonResults.length; i++) {
-    //   await getDistanceHa(lat, lng, jsonResults[i]['geometry']['location']['lat'], jsonResults[i]['geometry']['location']['lng'], 6371000, i);
-    //   jsonResults[i].addAll({"distance": distance});
-    // }
-
-    return jsonResults.map((place) => Place.fromJson(place)).toList();
-    */
   }
 
   Future<double> getDistanceHa(double tikorLat2, double tikorLong2, double tikorLat1, double tikorLong1, double earthRadius, int i) {
