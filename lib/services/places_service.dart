@@ -5,7 +5,7 @@ import 'dart:convert' as convert;
 import 'dart:math' show sin, cos, sqrt, atan2;
 
 class PlacesService {
-  final key = 'AIzaSyBXfI1VzlRNZ-lzoIa0iCl1x8T3g1qMrGU';
+  final key = 'AIzaSyAvF0CYj_fBai5uBmKcvyFcoHMQQgHGFSg';
   static String place = 'mosque';
   double distance;
   Future<List<Place>> getPlaces(double lat, double lng) async {
