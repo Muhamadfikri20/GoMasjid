@@ -12,8 +12,10 @@ class PlacesService {
     var response = await http.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&type=$place&radius=5000&key=$key');
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'] as List;
+    jsonResults = jsonResults.where((element) => element['name'].toUpperCase().contains('Masjid'.toUpperCase()) == true).toList();
     for (int i = 0; i < jsonResults.length; i++) {
       await getDistanceHa(lat, lng, jsonResults[i]['geometry']['location']['lat'], jsonResults[i]['geometry']['location']['lng'], 6371000, i);
+
       jsonResults[i].addAll({"distance": distance});
     }
     return jsonResults.map((place) => Place.fromJson(place)).toList();

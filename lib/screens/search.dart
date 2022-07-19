@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:locatey/services/geolocator_service.dart';
 import 'package:locatey/services/marker_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -57,14 +58,25 @@ class Search extends StatelessWidget {
                                             SizedBox(
                                               height: 5.0,
                                             ),
-                                            places[index].distance != null ? Text('${places[index].vicinity} \u00b7 ${places[index].distance.toStringAsFixed(1)} km') : Container()
+                                            places[index].distance != null ? Text('${places[index].vicinity} \u00b7 ${places[index].distance.toStringAsFixed(1)} km') : Container(),
+                                            SizedBox(
+                                              height: 5.0,
+                                            ),
+                                            places[index].openingHours != null
+                                                ? places[index].openingHours.open == true
+                                                    ? Text("Buka", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green))
+                                                    : Text("Tutup", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red))
+                                                : Container(),
+                                            SizedBox(
+                                              height: 5.0,
+                                            ),
                                           ],
                                         ),
                                         trailing: IconButton(
                                           icon: Icon(Icons.directions),
                                           color: Theme.of(context).primaryColor,
                                           onPressed: () {
-                                            _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng);
+                                            _launchMapsUrl(places[index].geometry.location.lat, places[index].geometry.location.lng, places[index].name);
                                           },
                                         ),
                                       ),
@@ -83,10 +95,10 @@ class Search extends StatelessWidget {
     );
   }
 
-  void _launchMapsUrl(double lat, double lng) async {
+  void _launchMapsUrl(double lat, double lng, String name) async {
     final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     if (await canLaunch(url)) {
-      await launch(url);
+      MapsLauncher.launchCoordinates(lat, lng, name);
     } else {
       throw 'Could not launch $url';
     }
